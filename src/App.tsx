@@ -1,24 +1,41 @@
 import './App.css'
 import { Button, Form, Input } from 'antd'
+import { useState } from 'react'
+
+interface FormValues {
+  taskName: string
+}
 
 function App() {
+  const [taskList, setTaskList] = useState<string[]>([])
+
+  const handleSubmit = (values: FormValues) => {
+    console.log('Form values:', values.taskName);
+    setTaskList(prev => [...prev, values.taskName])
+  }
+  const listItems = taskList.map((task, index) => 
+    <li key={index}>{task}</li>
+  );
 
   return (
     <>
       <div className='flex flex-col gap-10'>
-        <h1>To do app</h1>
-        <div>
+        <h1 className='flex self-baseline'>To do app</h1>
+        <div className='flex gap-10'>
+          {/* form */}
           <Form
-            className='flex flex-col w-full'>
+            className='flex flex-col w-full'
+            onFinish={handleSubmit}
+            >
             <Form.Item
-              name='task-name'
+              name='taskName'
               rules={[
                 {
                   required: true,
                   message: "Title cannot be empty"
                 },
                 {
-                  min: 20,
+                  min: 10,
                   message: "Title must be at least 20 characters."
                 },
                 {
@@ -45,6 +62,14 @@ function App() {
               </Button>
             </Form.Item>
           </Form>
+          
+          {/* task list */}
+          <div className='w-100 h-auto'>
+            <h2 className='text-4xl'>Task:</h2>
+            <ul>
+              {listItems.length > 0 ? listItems : <li>No tasks yet</li>}
+            </ul>
+          </div>
         </div>
       </div>
     </>
